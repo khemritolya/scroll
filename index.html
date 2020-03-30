@@ -3,9 +3,43 @@
 	<head>
 		<title>Scroll</title>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<!-- Thank you David Bau, without whom this would have been much more difficult -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
+		<!-- I know jQuery is old and outdated. You're welcome to come up with alernatives -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 		<script src="script.js"></script>
+		<style>
+			html {
+				scroll-behavior: smooth;
+			}
+
+			.box {
+				position: relative;
+				left: 50%;
+				margin-left: -300px;
+				min-width: 600px;
+				width: 600px;
+				max-width: 600px;
+			}
+
+			@media screen and (max-width: 600px) {
+				.box {
+					position: relative;
+					margin-left: 0px;
+					left: 0%;
+					min-width: 600px;
+					width: 600px;
+					max-width: 600px;
+				}
+			}
+
+			p {
+				font-family: monospace;
+				font-size: 17px;
+			}
+
+		</style>
 	</head>
-	<body>
-		This page is still under construction
+	<body id="body">
 	</body>
 </html>
