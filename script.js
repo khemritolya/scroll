@@ -50,8 +50,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 function random_word(rng) {
     let idx = Math.abs(rng.int32()) % bound_size;
 
-    let arr_index = 0
-    while (idx > 0) {
+    let arr_index = 0;
+    while (idx > freq_table[arr_index][1]) {
         idx -= freq_table[arr_index][1]
         arr_index++;
     }
