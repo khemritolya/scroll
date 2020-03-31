@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html id="html" lang="en">
 	<head>
 		<title>Scroll</title>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
@@ -8,7 +8,7 @@
 		<!-- I know jQuery is old and outdated. You're welcome to come up with alernatives -->
 		<script src="script.js"></script>
 		<style>
-			html {
+			#html {
 				scroll-behavior: smooth;
 			}
 
@@ -19,6 +19,13 @@
 				min-width: 600px;
 				width: 600px;
 				max-width: 600px;
+			}
+
+			.next-link {
+				position: relative;
+				left: 30px;
+				font-weight: normal;
+				font-size: 15px;
 			}
 
 			@media screen and (max-width: 600px) {

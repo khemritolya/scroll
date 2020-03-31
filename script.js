@@ -1,8 +1,9 @@
-const freq_url = "https://raw.githubusercontent.com/khemritolya/scroll/master/freq.txt"
+const freq_url = "https://raw.githubusercontent.com/khemritolya/scroll/master/freq.txt";
 
-let freq_table = []
-let bound_size = 0
-let current_anchor = "0"
+let freq_table = [];
+let bound_size = 0;
+let lowest_anchor = "0";
+let highest_anchor = "0";
 
 document.addEventListener('DOMContentLoaded', async function() {
     window.location.hash = window.location.hash.replace(/[^#0-9]/g, "");
@@ -47,23 +48,17 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
-    freq_table.reverse();
-
     console.log("Done building freq table with bound size " + bound_size);
     console.log(freq_table);
 
     const initial_anchor = window.location.hash.replace("#", "");
     document.getElementById("body").innerHTML = create_block(initial_anchor);
-    current_anchor = initial_anchor;
+    lowest_anchor = initial_anchor;
+    highest_anchor = initial_anchor;
 });
 
-function increment(anchor) {
-    let asInt = BigInt(anchor) + 1n;
-    return asInt.toString();
-}
-
-function decrement(anchor) {
-    let asInt = BigInt(anchor) - 1n;
+function add(anchor, value) {
+    let asInt = BigInt(anchor) + value;
     return asInt.toString();
 }
 
@@ -94,25 +89,22 @@ function create_block(anchor) {
     }
 
     return("<div class = \"box\" id = \"div-" + anchor + "\">" + 
-        "<a name=\"" + anchor + "\" href=\"#"+ anchor +"\">Block #" + anchor + "</a><p>" + 
-        res + "</p></div>");
+        "<a name=\"" + anchor + "\" href=\"#"+ anchor +"\">Block #" + anchor + "</a>" + 
+        "<a href=\"#" + add(anchor, 1n) + "\" class=\"next-link\">next</a>" +
+        "<p>" + res + "</p></div>");
 }
 window.addEventListener('scroll', async function() {
     const element = document.documentElement;
-    console.log("A scroll event: " + element.scrollTop + "," + element.clientHeight);
-    if (element.scrollTop + 2 * element.clientHeight > element.scrollHeight) {
-        let next_anchor = increment(current_anchor);
+    if (element.scrollTop + 4 * element.clientHeight > element.scrollHeight) {
+        let next_anchor = add(highest_anchor, 1n);
         document.getElementById("body").innerHTML += create_block(next_anchor);
-        current_anchor = next_anchor;
-    // } else if (element.scrollTop < element.clientHeight / 10) {
-    //     console.log("I'm near the top");
-    //     let prev_anchor = decrement(current_anchor);
-    //     if (prev_anchor === "-1") {
-    //         return;
-    //     }
-
-    //     document.getElementById("body").innerHTML = create_block(prev_anchor) + document.getElementById("body").innerHTML;
-
-    //     current_anchor = prev_anchor;
+        highest_anchor = next_anchor;
+    } else if (element.scrollTop === 0 && lowest_anchor !== "0") {
+        let prev_anchor = add(lowest_anchor, -1n);
+        document.getElementById("html").style.scrollBehavior = "auto";
+        document.getElementById("body").innerHTML = create_block(prev_anchor) + document.getElementById("body").innerHTML;
+        document.getElementById("div-"+lowest_anchor).scrollIntoView();
+        document.getElementById("html").style.scrollBehavior = "smooth";
+        lowest_anchor = prev_anchor;
     }
  }, true);
