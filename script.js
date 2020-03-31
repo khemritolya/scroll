@@ -2,8 +2,16 @@ const freq_url = "https://raw.githubusercontent.com/khemritolya/scroll/master/fr
 
 let freq_table = []
 let bound_size = 0
+let current_anchor = "0"
 
 document.addEventListener('DOMContentLoaded', async function() {
+    window.location.hash = window.location.hash.replace(/[^#0-9]/g, "");
+    window.location.hash = window.location.hash.toLowerCase();
+
+    if (window.location.hash == "" || window.location.hash == "#") {
+        window.location.hash = "#0"
+    }
+
     // the raw text representing a frequency table
     let raw;
 
@@ -44,8 +52,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     console.log("Done building freq table with bound size " + bound_size);
     console.log(freq_table);
 
-    document.getElementById("body").innerHTML = create_block(window.location.hash);
+    const initial_anchor = window.location.hash.replace("#", "");
+    document.getElementById("body").innerHTML = create_block(initial_anchor);
+    current_anchor = initial_anchor;
 });
+
+function increment(anchor) {
+    let asInt = BigInt(anchor) + 1n;
+    return asInt.toString();
+}
+
+function decrement(anchor) {
+    let asInt = BigInt(anchor) - 1n;
+    return asInt.toString();
+}
 
 function random_word(rng) {
     let idx = Math.abs(rng.int32()) % bound_size;
@@ -60,13 +80,39 @@ function random_word(rng) {
 }
 
 function create_block(anchor) {
+    if (anchor.startsWith("-")) {
+        return("");
+    }
     let rng = new Math.seedrandom(anchor);
+    let size = 490 + Math.abs(rng.int32()) % 21;
+    console.log("Creating a text block with anchor: " + anchor + " of size " + size);
 
     let res = '';
-    for (i = 0; i < 1000; i++) {
+    for (i = 0; i < size; i++) {
         res += random_word(rng);
         res += " "
     }
 
-    return("<div class = \"box\"><p>" + res + "</p></div>");
+    return("<div class = \"box\" id = \"div-" + anchor + "\">" + 
+        "<a name=\"" + anchor + "\" href=\"#"+ anchor +"\">Block #" + anchor + "</a><p>" + 
+        res + "</p></div>");
 }
+window.addEventListener('scroll', async function() {
+    const element = document.documentElement;
+    console.log("A scroll event: " + element.scrollTop + "," + element.clientHeight);
+    if (element.scrollTop + 2 * element.clientHeight > element.scrollHeight) {
+        let next_anchor = increment(current_anchor);
+        document.getElementById("body").innerHTML += create_block(next_anchor);
+        current_anchor = next_anchor;
+    // } else if (element.scrollTop < element.clientHeight / 10) {
+    //     console.log("I'm near the top");
+    //     let prev_anchor = decrement(current_anchor);
+    //     if (prev_anchor === "-1") {
+    //         return;
+    //     }
+
+    //     document.getElementById("body").innerHTML = create_block(prev_anchor) + document.getElementById("body").innerHTML;
+
+    //     current_anchor = prev_anchor;
+    }
+ }, true);
