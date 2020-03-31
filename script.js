@@ -52,9 +52,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     console.log(freq_table);
 
     const initial_anchor = window.location.hash.replace("#", "");
-    document.getElementById("body").innerHTML = create_block(initial_anchor);
+    const next_anchor = add(initial_anchor, 1n);
+    document.getElementById("body").innerHTML = create_block(initial_anchor) + create_block(next_anchor);
     lowest_anchor = initial_anchor;
-    highest_anchor = initial_anchor;
+    highest_anchor = next_anchor;
 });
 
 function add(anchor, value) {
