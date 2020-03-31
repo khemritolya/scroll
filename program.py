@@ -16,7 +16,7 @@ for filename in glob.iglob('**/*.txt', recursive=True):
 				else:
 					d[sanit] = 1
 
-d = {k: v for k, v in sorted(d.items(), key=lambda item: item[1])}
+d = {k: v for k, v in sorted(d.items(), key=lambda item: -item[1])}
 print(d)
 
 with open("freq.txt", 'w') as f:
